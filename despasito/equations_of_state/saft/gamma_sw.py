@@ -3,7 +3,7 @@ r"""
     
     EOS object for SAFT-:math:`\gamma`-Mie
     
-    Equations referenced in this code are from V. Papaioannou et al J. Chem. Phys. 140 054107 2014
+    Equations referenced in this code are from Lymperiadis A. et al J. Chem. Phys. 127, 234903, 2007
     
 """
 
@@ -150,7 +150,7 @@ class gamma_sw():
         for i in range(ncomp):
             for k in range(nbeads):
                 zki[i, k] = zki[i, k] / zkinorm[i]
-    
+    	#average self-sigma, epsilon, lambda
         for i in range(ncomp):
             for k in range(nbeads):
                 sigmaii[i] += zki[i, k] * self.eos_dict['sigma_kl'][k, k]**3
@@ -314,7 +314,7 @@ class gamma_sw():
 
         tmp = (6.0 / (np.pi * rho * constants.molecule_per_nm3))
         tmp1 = np.log1p(-zeta[:, 3]) * (zeta[:, 2]**3 / (zeta[:, 3]**2) - zeta[:, 0])
-        tmp2 = 3.0 * zeta[:, 2] / (1 - zeta[:, 3]) * zeta[:, 1]
+        tmp2 = 3.0 * zeta[:, 2] * zeta[:, 1] / (1 - zeta[:, 3]) 
         tmp3 = zeta[:, 2]**3 / (zeta[:, 3] * ((1.0 - zeta[:, 3])**2))
         AHS = tmp*(tmp1 + tmp2 + tmp3)
 
@@ -350,6 +350,7 @@ class gamma_sw():
             zetax = self.reduced_density(rho, xi)[:,3]
 
         g0HS = self.calc_g0HS(rho, xi, zetax=zetax)
+	#rho_s*xskl*alphakl
         a1kl_tmp = np.tensordot(rho * constants.molecule_per_nm3, self.eos_dict['xskl']*self.alphakl, 0)
         A1 = -(self.eos_dict['Cmol2seg']**2 / T) * np.sum(a1kl_tmp * g0HS, axis=(1,2)) # Units of K
 
