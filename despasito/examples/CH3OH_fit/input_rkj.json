@@ -15,5 +15,8 @@
     "Gibbard": {
         "datatype": "saturation_properties",
         "file": "methanol_Psat_1.csv"
+	"weights":{
+		"Psat":0.3
+		  }
     }
 }
